@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude MCP Job Agent - Automated Applications with AI</title>
+    <meta name="description" content="An agentic job application system built with Claude Code and Model Context Protocol (MCP). Using AI to apply for AI jobs.">
+    <meta property="og:title" content="Claude MCP Job Agent">
+    <meta property="og:description" content="Using Claude to apply for a job at Anthropic - the ultimate meta demonstration">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent-orange: #d29922;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-purple: #a371f7;
+            --border: #30363d;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(210, 153, 34, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 8px 16px;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        h1 {
+            font-size: clamp(40px, 6vw, 72px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .meta-callout {
+            background: linear-gradient(135deg, rgba(210, 153, 34, 0.1), rgba(163, 113, 247, 0.1));
+            border: 1px solid var(--accent-orange);
+            border-radius: 12px;
+            padding: 20px 24px;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        .meta-callout-title {
+            font-weight: 600;
+            color: var(--accent-orange);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Architecture Section */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 600px;
+        }
+
+        .architecture {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 48px;
+        }
+
+        .arch-diagram {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .arch-diagram .highlight {
+            color: var(--accent-orange);
+        }
+
+        .arch-diagram .blue {
+            color: var(--accent-blue);
+        }
+
+        .arch-diagram .green {
+            color: var(--accent-green);
+        }
+
+        .arch-diagram .purple {
+            color: var(--accent-purple);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-orange);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Code Block */
+        .code-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 48px 0;
+        }
+
+        .code-header {
+            background: var(--bg-tertiary);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .code-dot.red { background: #ff5f56; }
+        .code-dot.yellow { background: #ffbd2e; }
+        .code-dot.green { background: #27c93f; }
+
+        .code-title {
+            margin-left: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .code-content {
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+        }
+
+        .code-content .comment {
+            color: var(--text-secondary);
+        }
+
+        .code-content .keyword {
+            color: var(--accent-purple);
+        }
+
+        .code-content .string {
+            color: var(--accent-green);
+        }
+
+        .code-content .function {
+            color: var(--accent-blue);
+        }
+
+        /* Workflow */
+        .workflow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            justify-content: center;
+            margin: 48px 0;
+        }
+
+        .workflow-step {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .workflow-step-num {
+            color: var(--accent-orange);
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .workflow-arrow {
+            color: var(--text-secondary);
+            font-size: 20px;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 48px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 0;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: #e5a82a;
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                Built with Claude Code + MCP
+            </div>
+            <h1>
+                <span class="gradient-text">Claude MCP</span><br>
+                Job Agent
+            </h1>
+            <p class="hero-subtitle">
+                An agentic job application system that uses Claude Code with Model Context Protocol integrations to autonomously navigate job sites, fill forms, and submit applications.
+            </p>
+
+            <div class="meta-callout">
+                <div class="meta-callout-title">
+                    <span>&#129302;</span> The Meta Twist
+                </div>
+                <p>Using Claude to apply for a job at Anthropic - demonstrating advanced prompt engineering and MCP integration skills through the application itself.</p>
+            </div>
+
+            <div class="btn-group">
+                <a href="https://github.com/ExpertVagabond/claude-mcp-job-agent" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    View Source
+                </a>
+                <a href="#architecture" class="btn btn-secondary">
+                    How It Works
+                </a>
+            </div>
+        </section>
+
+        <section class="section" id="architecture">
+            <h2 class="section-title">Architecture</h2>
+            <p class="section-subtitle">
+                Claude Code orchestrates multiple MCP servers to handle browser automation and email integration.
+            </p>
+
+            <div class="architecture">
+                <div class="arch-diagram">
+<span class="highlight">Claude Code (Opus 4.5)</span>
+         │
+         ├──▶ <span class="blue">Playwright MCP</span>
+         │    └── Browser automation
+         │    └── Form filling
+         │    └── File uploads
+         │    └── Screenshot capture
+         │
+         ├──▶ <span class="green">Gmail MCP</span>
+         │    └── OAuth2 authentication
+         │    └── Search emails
+         │    └── Read verification codes
+         │
+         └──▶ <span class="purple">Local Filesystem</span>
+              └── Resumes (PDF/MD)
+              └── Cover letters
+              └── Configuration
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">&#127760;</div>
+                    <h3 class="feature-title">Browser Automation</h3>
+                    <p class="feature-desc">Playwright MCP enables Claude to navigate websites, click buttons, fill forms, and upload documents - all through natural language commands.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128231;</div>
+                    <h3 class="feature-title">Email Integration</h3>
+                    <p class="feature-desc">Gmail MCP with OAuth2 allows Claude to search emails and retrieve verification codes automatically - zero manual copy-paste.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128196;</div>
+                    <h3 class="feature-title">Document Access</h3>
+                    <p class="feature-desc">Direct filesystem access to resumes and cover letters. Claude reads your documents and intelligently maps content to form fields.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128640;</div>
+                    <h3 class="feature-title">Agentic Workflow</h3>
+                    <p class="feature-desc">Multi-step reasoning with tool orchestration. Claude plans the application strategy and adapts to different job site formats.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">The Workflow</h2>
+            <p class="section-subtitle">From "apply to this job" to submitted application in one conversation.</p>
+
+            <div class="workflow">
+                <div class="workflow-step">
+                    <div class="workflow-step-num">01</div>
+                    <div>"Apply to Anthropic"</div>
+                </div>
+                <span class="workflow-arrow">&#8594;</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-num">02</div>
+                    <div>Navigate to careers</div>
+                </div>
+                <span class="workflow-arrow">&#8594;</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-num">03</div>
+                    <div>Fill application form</div>
+                </div>
+                <span class="workflow-arrow">&#8594;</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-num">04</div>
+                    <div>Upload resume</div>
+                </div>
+                <span class="workflow-arrow">&#8594;</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-num">05</div>
+                    <div>Fetch email code</div>
+                </div>
+                <span class="workflow-arrow">&#8594;</span>
+                <div class="workflow-step">
+                    <div class="workflow-step-num">06</div>
+                    <div>Submit</div>
+                </div>
+            </div>
+
+            <div class="code-section">
+                <div class="code-header">
+                    <span class="code-dot red"></span>
+                    <span class="code-dot yellow"></span>
+                    <span class="code-dot green"></span>
+                    <span class="code-title">~/.mcp.json</span>
+                </div>
+                <div class="code-content">
+<span class="comment">// MCP server configuration for Claude Code</span>
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"playwright"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"@playwright/mcp@latest"</span>]
+    },
+    <span class="string">"gmail"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"@gongrzhe/server-gmail-autoauth-mcp"</span>]
+    }
+  }
+}
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Why This Matters</h2>
+            <p class="section-subtitle">This isn't just a demo - it's a demonstration of where AI-assisted workflows are heading.</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">&#129504;</div>
+                    <h3 class="feature-title">Advanced Prompt Engineering</h3>
+                    <p class="feature-desc">Multi-tool orchestration requiring Claude to plan, execute, and adapt across browser and email contexts.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128279;</div>
+                    <h3 class="feature-title">MCP Integration Skills</h3>
+                    <p class="feature-desc">Practical implementation of Model Context Protocol - connecting AI capabilities to real-world actions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128161;</div>
+                    <h3 class="feature-title">Creative Problem Solving</h3>
+                    <p class="feature-desc">The meta angle: using the product to apply for a job at the company that makes the product.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#128218;</div>
+                    <h3 class="feature-title">Production-Ready Patterns</h3>
+                    <p class="feature-desc">OAuth2 authentication, error handling, and multi-step workflows - patterns that scale to enterprise use cases.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">The Stack</h2>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value">Opus 4.5</div>
+                    <div class="stat-label">Claude Model</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">2</div>
+                    <div class="stat-label">MCP Servers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Manual Steps</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Automated</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Built by <a href="https://github.com/ExpertVagabond">Matthew Karsten</a> with Claude Code</p>
+            <p style="margin-top: 8px; font-size: 13px;">Applying AI to get a job building AI</p>
+        </div>
+    </footer>
+</body>
+</html>
